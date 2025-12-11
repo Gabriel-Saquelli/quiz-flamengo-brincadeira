@@ -128,6 +128,18 @@
         .question-screen {
             display: none;
         }
+        
+        .question-screen.active {
+            display: block !important;
+        }
+        
+        .start-screen.active {
+            display: block !important;
+        }
+        
+        .result-screen.active {
+            display: block !important;
+        }
 
         .progress-bar {
             width: 100%;
@@ -365,7 +377,7 @@
         </div>
 
         <div class="content">
-            <div id="startScreen" class="start-screen">
+            <div id="startScreen" class="start-screen active">
                 <h2>🔴⚫ Bem-vindo ao Quiz!</h2>
                 <p>Responda 5 perguntas sobre sua personalidade e descubra qual ícone do Flamengo você seria, desde os craques históricos até os heróis modernos!</p>
                 <button class="btn" onclick="startQuiz()">Começar Quiz</button>
@@ -644,21 +656,18 @@
         let userProfile = {};
 
         function startQuiz() {
-            console.log("startQuiz chamado");
-            console.log("questions:", questions);
-            console.log("questions.length:", questions.length);
+            document.getElementById('startScreen').classList.remove('active');
+            document.getElementById('startScreen').style.display = 'none';
             
-            document.getElementById('startScreen').classList.add('hidden');
-            document.getElementById('questionScreen').classList.remove('hidden');
-            document.getElementById('questionScreen').style.display = 'block';
+            const questionScreen = document.getElementById('questionScreen');
+            questionScreen.classList.add('active');
+            questionScreen.style.display = 'block';
+            
             showQuestion();
         }
 
         function showQuestion() {
-            console.log("showQuestion chamado, currentQuestion:", currentQuestion);
             const question = questions[currentQuestion];
-            console.log("question:", question);
-            
             const progress = ((currentQuestion + 1) / questions.length) * 100;
             
             document.getElementById('progressFill').style.width = progress + '%';
@@ -675,8 +684,6 @@
                 optionDiv.onclick = () => selectOption(option.scores);
                 optionsContainer.appendChild(optionDiv);
             });
-            
-            console.log("Pergunta exibida");
         }
 
         function selectOption(scores) {
@@ -718,8 +725,15 @@
             
             const player = players[bestMatch];
             
-            document.getElementById('questionScreen').classList.add('hidden');
-            document.getElementById('resultScreen').classList.remove('hidden');
+            // Esconder tela de perguntas
+            const questionScreen = document.getElementById('questionScreen');
+            questionScreen.classList.remove('active');
+            questionScreen.style.display = 'none';
+            
+            // Mostrar tela de resultado
+            const resultScreen = document.getElementById('resultScreen');
+            resultScreen.classList.add('active');
+            resultScreen.style.display = 'block';
             
             document.getElementById('resultImage').src = IMAGES[player.imageKey];
             document.getElementById('resultName').textContent = player.name;
@@ -762,8 +776,13 @@ ${quizUrl}
             currentQuestion = 0;
             userProfile = {};
             
-            document.getElementById('resultScreen').classList.add('hidden');
-            document.getElementById('startScreen').classList.remove('hidden');
+            const resultScreen = document.getElementById('resultScreen');
+            resultScreen.classList.remove('active');
+            resultScreen.style.display = 'none';
+            
+            const startScreen = document.getElementById('startScreen');
+            startScreen.classList.add('active');
+            startScreen.style.display = 'block';
         }
     </script>
 </body>
