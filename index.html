@@ -367,7 +367,7 @@
         <div class="content">
             <div id="startScreen" class="start-screen">
                 <h2>🔴⚫ Bem-vindo ao Quiz!</h2>
-                <p>Responda 3 perguntas e descubra qual ícone do Flamengo você seria, desde os craques históricos até os heróis modernos!</p>
+                <p>Responda 5 perguntas sobre sua personalidade e descubra qual ícone do Flamengo você seria, desde os craques históricos até os heróis modernos!</p>
                 <button class="btn" onclick="startQuiz()">Começar Quiz</button>
             </div>
 
@@ -375,13 +375,15 @@
                 <div class="progress-bar">
                     <div id="progressFill" class="progress-fill" style="width: 0%"></div>
                 </div>
-                <div id="questionNumber" class="question-number">Pergunta 1 de 3</div>
+                <div id="questionNumber" class="question-number">Pergunta 1 de 5</div>
                 <div id="questionText" class="question-text"></div>
                 <div id="optionsContainer" class="options"></div>
             </div>
 
             <div id="resultScreen" class="result-screen">
-                <div id="resultImage" class="result-image"></div>
+                <div class="result-image">
+                    <img id="resultImage" src="" alt="">
+                </div>
                 <div id="resultName" class="result-name"></div>
                 <div id="resultDescription" class="result-description"></div>
                 <div id="resultTraits" class="result-traits"></div>
@@ -398,7 +400,6 @@
     </div>
 
     <script>
-        // Mapeamento de imagens (assumindo que as imagens estão na mesma pasta)
         const IMAGES = {
             zico: "zico.jpg",
             junior: "junior.jpg",
@@ -409,62 +410,67 @@
             petkovic: "petkovic.jpg",
             gabigol: "gabigol.jpg",
             arrascaeta: "arrascaeta.jpg",
-            brunohenrique: "bruno-henrique.jpg", // Corrigido para o nome do arquivo
-            evertonribeiro: "everton-ribeiro.jpg", // Corrigido para o nome do arquivo
-            diegoalves: "diego-alves.jpg" // Corrigido para o nome do arquivo
+            brunohenrique: "bruno-henrique.jpg",
+            evertonribeiro: "everton-ribeiro.jpg",
+            diegoalves: "diego-alves.jpg"
         };
 
-        // Definição dos jogadores
+        // Perfis únicos de cada jogador
         const players = {
             zico: {
                 name: "Zico",
                 imageKey: "zico",
-                description: "O Galinho de Quintino! Você é técnico, criativo e um líder nato. Sua visão de jogo é incomparável e você sempre aparece nos momentos decisivos.",
+                description: "O maior de todos! Você é técnico, criativo e um líder nato. Sua habilidade e visão de jogo fazem você se destacar em qualquer situação.",
                 traits: [
-                    { icon: "⚽", text: "Craque absoluto" },
-                    { icon: "🎯", text: "Cobrador de falta lendário" },
-                    { icon: "👑", text: "Líder inspirador" }
-                ]
+                    { icon: "🎯", text: "Técnica impecável" },
+                    { icon: "🧠", text: "Inteligência de jogo" },
+                    { icon: "👑", text: "Liderança natural" }
+                ],
+                profile: { tecnico: 10, lider: 10, cerebral: 9, classico: 10, decisivo: 7 }
             },
             junior: {
                 name: "Júnior",
                 imageKey: "junior",
-                description: "O Capacete! Você é versátil, inteligente e sempre surpreende. Sua capacidade de se adaptar a diferentes posições é única.",
+                description: "Estiloso e versátil! Você sabe jogar em várias posições e sempre dá um toque especial. Sua criatividade é sua marca registrada.",
                 traits: [
-                    { icon: "🎨", text: "Versátil" },
-                    { icon: "🧠", text: "Inteligente taticamente" },
-                    { icon: "⭐", text: "Campeão do mundo" }
-                ]
+                    { icon: "✨", text: "Criatividade única" },
+                    { icon: "🎨", text: "Estilo próprio" },
+                    { icon: "🔄", text: "Versátil" }
+                ],
+                profile: { versatil: 10, criativo: 10, estiloso: 9, classico: 10, tecnico: 6 }
             },
             adilio: {
                 name: "Adílio",
                 imageKey: "adilio",
-                description: "O Divino! Você tem classe, elegância e uma técnica refinada. Seu estilo de jogo é pura poesia em campo.",
+                description: "Elegante e cerebral! Você pensa antes de agir e sempre encontra as melhores soluções. Sua classe é incomparável.",
                 traits: [
-                    { icon: "✨", text: "Elegante" },
-                    { icon: "🎭", text: "Técnica refinada" },
-                    { icon: "💎", text: "Classe pura" }
-                ]
+                    { icon: "🎭", text: "Elegância em campo" },
+                    { icon: "🧩", text: "Inteligente" },
+                    { icon: "🎯", text: "Preciso" }
+                ],
+                profile: { tecnico: 10, elegante: 10, cerebral: 10, classico: 10, calmo: 8 }
             },
             romario: {
                 name: "Romário",
                 imageKey: "romario",
-                description: "O Baixinho! Você é artilheiro nato, confiante e decisivo. Sua frieza na área é lendária.",
+                description: "Artilheiro nato! Você é objetivo, confiante e sempre aparece na hora certa. Seu faro de gol é impressionante.",
                 traits: [
-                    { icon: "⚽", text: "Artilheiro implacável" },
-                    { icon: "😎", text: "Confiança absoluta" },
-                    { icon: "🎯", text: "Oportunista" }
-                ]
+                    { icon: "⚽", text: "Artilheiro letal" },
+                    { icon: "💪", text: "Confiança total" },
+                    { icon: "🎯", text: "Decisivo" }
+                ],
+                profile: { artilheiro: 10, confiante: 10, oportunista: 9, classico: 8, decisivo: 9 }
             },
             savio: {
                 name: "Sávio",
                 imageKey: "savio",
-                description: "Velocidade e habilidade! Você é explosivo, driblador e adora um drible desconcertante. Seu estilo é imprevisível.",
+                description: "Veloz e determinado! Você não desiste nunca e sempre busca o gol. Sua velocidade e raça são admiráveis.",
                 traits: [
                     { icon: "⚡", text: "Velocidade" },
-                    { icon: "🎪", text: "Dribles desconcertantes" },
-                    { icon: "🔥", text: "Imprevisível" }
-                ]
+                    { icon: "💪", text: "Determinação" },
+                    { icon: "🔥", text: "Raça" }
+                ],
+                profile: { veloz: 10, racudo: 10, guerreiro: 9, transicao: 10, perseverante: 8 }
             },
             adriano: {
                 name: "Adriano Imperador",
@@ -474,7 +480,8 @@
                     { icon: "💥", text: "Potência física" },
                     { icon: "🚀", text: "Chute devastador" },
                     { icon: "👑", text: "Imponente" }
-                ]
+                ],
+                profile: { forte: 10, potente: 10, imponente: 9, transicao: 10, intimidador: 9 }
             },
             petkovic: {
                 name: "Petkovic",
@@ -484,7 +491,8 @@
                     { icon: "🎯", text: "Oportunista" },
                     { icon: "❄️", text: "Frio nos momentos decisivos" },
                     { icon: "⚽", text: "Goleador" }
-                ]
+                ],
+                profile: { oportunista: 10, goleador: 9, frio: 10, transicao: 10, eficiente: 9 }
             },
             gabigol: {
                 name: "Gabigol",
@@ -494,7 +502,8 @@
                     { icon: "🏆", text: "Especialista em finais" },
                     { icon: "⚽", text: "Faro de gol" },
                     { icon: "😎", text: "Carismático" }
-                ]
+                ],
+                profile: { artilheiro: 10, confiante: 10, decisivo: 10, moderno: 10, clutch: 9 }
             },
             arrascaeta: {
                 name: "Arrascaeta",
@@ -504,7 +513,8 @@
                     { icon: "🎨", text: "Técnica refinada" },
                     { icon: "✨", text: "Craque criativo" },
                     { icon: "👁️", text: "Visão de jogo" }
-                ]
+                ],
+                profile: { tecnico: 10, criativo: 10, magico: 9, moderno: 10, driblador: 8 }
             },
             brunohenrique: {
                 name: "Bruno Henrique",
@@ -514,7 +524,8 @@
                     { icon: "💪", text: "Raça infinita" },
                     { icon: "⚡", text: "Velocidade" },
                     { icon: "🔥", text: "Garra" }
-                ]
+                ],
+                profile: { racudo: 10, veloz: 10, guerreiro: 10, moderno: 10, incansavel: 9 }
             },
             evertonribeiro: {
                 name: "Everton Ribeiro",
@@ -524,7 +535,8 @@
                     { icon: "🎼", text: "Maestro" },
                     { icon: "🧠", text: "Inteligência tática" },
                     { icon: "👌", text: "Decisões certas" }
-                ]
+                ],
+                profile: { cerebral: 10, elegante: 9, maestro: 10, moderno: 10, organizador: 9 }
             },
             diegoalves: {
                 name: "Diego Alves",
@@ -534,81 +546,119 @@
                     { icon: "🧤", text: "Defesas impossíveis" },
                     { icon: "🛡️", text: "Segurança" },
                     { icon: "🎯", text: "Especialista em pênaltis" }
-                ]
+                ],
+                profile: { seguro: 10, confiavel: 10, defensor: 10, moderno: 10, penaltis: 10 }
             }
         };
 
-        // MAPEAMENTO DIRETO: Cada combinação leva a 1 jogador específico
-        const playerMapping = {
-            // Clássicos Técnicos
-            "classico-tecnico-lider": "zico",
-            "classico-tecnico-inteligente": "adilio",
-            "classico-versatil-criativo": "junior",
-            
-            // Clássicos Atacantes
-            "classico-atacante-confiante": "romario",
-            
-            // Transição
-            "transicao-atacante-racudo": "savio",
-            "transicao-atacante-forcudo": "adriano",
-            "transicao-atacante-oportunista": "petkovic",
-            
-            // Modernos Técnicos
-            "moderno-tecnico-criativo": "arrascaeta",
-            "moderno-tecnico-inteligente": "evertonribeiro",
-            
-            // Modernos Atacantes
-            "moderno-atacante-confiante": "gabigol",
-            "moderno-atacante-racudo": "brunohenrique",
-            
-            // Goleiro
-            "moderno-goleiro-confiavel": "diegoalves"
-        };
-
+        // 5 perguntas estratégicas com 3 opções cada
         const questions = [
             {
-                question: "Com qual era do Flamengo você mais se identifica?",
+                question: "Como você age em campo?",
                 options: [
-                    { text: "Anos 80-90: A era de ouro do Mengão 🏆", value: "classico" },
-                    { text: "Anos 2000-2010: A fase de transição 🔄", value: "transicao" },
-                    { text: "Anos 2010-2020: A era moderna e vitoriosa 🔥", value: "moderno" }
+                    { 
+                        text: "Penso e armo as jogadas com técnica 🧠",
+                        scores: { tecnico: 3, cerebral: 3, elegante: 2 }
+                    },
+                    { 
+                        text: "Vou com tudo, velocidade e raça 💨",
+                        scores: { veloz: 3, racudo: 3, guerreiro: 2 }
+                    },
+                    { 
+                        text: "Busco fazer gols e decidir jogos ⚽",
+                        scores: { artilheiro: 3, decisivo: 3, oportunista: 2 }
+                    }
                 ]
             },
             {
-                question: "Qual é o seu estilo de jogo preferido?",
+                question: "Qual é a sua maior qualidade?",
                 options: [
-                    { text: "Técnico e elegante, com dribles e jogadas 🎨", value: "tecnico" },
-                    { text: "Atacante decisivo, buscando gols 🥅", value: "atacante" },
-                    { text: "Versátil, jogando em várias posições 🔄", value: "versatil" },
-                    { text: "Goleiro seguro, última linha de defesa 🧤", value: "goleiro" }
+                    { 
+                        text: "Liderança e comando do time 👑",
+                        scores: { lider: 3, maestro: 2, organizador: 2 }
+                    },
+                    { 
+                        text: "Criatividade e magia com a bola ✨",
+                        scores: { criativo: 3, magico: 2, estiloso: 2, driblador: 2 }
+                    },
+                    { 
+                        text: "Força física e imposição 💪",
+                        scores: { forte: 3, potente: 3, imponente: 2, intimidador: 2 }
+                    }
                 ]
             },
             {
-                question: "Qual característica te define melhor?",
+                question: "Como você lida com pressão?",
                 options: [
-                    { text: "Líder nato, assumo responsabilidade 👑", value: "lider" },
-                    { text: "Criativo, sempre surpreendo 🎭", value: "criativo" },
-                    { text: "Inteligente, penso antes de agir 🧠", value: "inteligente" },
-                    { text: "Confiante, acredito no meu potencial 💪", value: "confiante" },
-                    { text: "Raçudo, nunca desisto 🔥", value: "racudo" },
-                    { text: "Forte e imponente, intimido adversários 💥", value: "forcudo" },
-                    { text: "Oportunista, aproveito as chances ⚡", value: "oportunista" },
-                    { text: "Confiável, sempre presente quando precisam 🛡️", value: "confiavel" }
+                    { 
+                        text: "Confiança total, adoro momentos decisivos 😎",
+                        scores: { confiante: 3, decisivo: 3, clutch: 2 }
+                    },
+                    { 
+                        text: "Mantenho a calma e penso estrategicamente 🎯",
+                        scores: { cerebral: 3, calmo: 3, frio: 2, eficiente: 2 }
+                    },
+                    { 
+                        text: "Luto até o fim com determinação 🔥",
+                        scores: { guerreiro: 3, racudo: 2, perseverante: 3, incansavel: 2 }
+                    }
+                ]
+            },
+            {
+                question: "Com qual era você mais se identifica?",
+                options: [
+                    { 
+                        text: "Anos 80-90: Os clássicos imortais 🏆",
+                        scores: { classico: 5 }
+                    },
+                    { 
+                        text: "Anos 2000-2010: A transição gloriosa 🔄",
+                        scores: { transicao: 5 }
+                    },
+                    { 
+                        text: "Anos 2010-2025: A era moderna vitoriosa 🔥",
+                        scores: { moderno: 5 }
+                    }
+                ]
+            },
+            {
+                question: "Qual é o seu diferencial especial?",
+                options: [
+                    { 
+                        text: "Versatilidade, jogo em várias posições 🔄",
+                        scores: { versatil: 4, criativo: 2 }
+                    },
+                    { 
+                        text: "Sou confiável, defendo meu time 🛡️",
+                        scores: { confiavel: 4, seguro: 3, defensor: 3, penaltis: 2 }
+                    },
+                    { 
+                        text: "Oportunismo, aproveito cada chance ⚡",
+                        scores: { oportunista: 4, goleador: 3, eficiente: 2 }
+                    }
                 ]
             }
         ];
 
-        let answers = {};
         let currentQuestion = 0;
+        let userProfile = {};
 
         function startQuiz() {
+            console.log("startQuiz chamado");
+            console.log("questions:", questions);
+            console.log("questions.length:", questions.length);
+            
             document.getElementById('startScreen').classList.add('hidden');
             document.getElementById('questionScreen').classList.remove('hidden');
+            document.getElementById('questionScreen').style.display = 'block';
             showQuestion();
         }
 
         function showQuestion() {
+            console.log("showQuestion chamado, currentQuestion:", currentQuestion);
             const question = questions[currentQuestion];
+            console.log("question:", question);
+            
             const progress = ((currentQuestion + 1) / questions.length) * 100;
             
             document.getElementById('progressFill').style.width = progress + '%';
@@ -622,16 +672,18 @@
                 const optionDiv = document.createElement('div');
                 optionDiv.className = 'option';
                 optionDiv.innerHTML = `<span>${option.text}</span>`;
-                optionDiv.onclick = () => selectOption(option.value);
+                optionDiv.onclick = () => selectOption(option.scores);
                 optionsContainer.appendChild(optionDiv);
             });
+            
+            console.log("Pergunta exibida");
         }
 
-        function selectOption(value) {
-            // Salvar resposta
-            if (currentQuestion === 0) answers.era = value;
-            if (currentQuestion === 1) answers.estilo = value;
-            if (currentQuestion === 2) answers.personalidade = value;
+        function selectOption(scores) {
+            // Acumular pontos no perfil do usuário
+            for (let attr in scores) {
+                userProfile[attr] = (userProfile[attr] || 0) + scores[attr];
+            }
             
             currentQuestion++;
             
@@ -643,24 +695,33 @@
         }
 
         function showResult() {
-            // Montar chave de combinação
-            const key = `${answers.era}-${answers.estilo}-${answers.personalidade}`;
+            // Calcular similaridade com cada jogador
+            let bestMatch = null;
+            let bestScore = -1;
             
-            // Buscar jogador correspondente
-            let playerKey = playerMapping[key];
-            
-            // Fallback caso a combinação não exista (não deveria acontecer)
-            if (!playerKey) {
-                // Tentar encontrar melhor match
-                playerKey = findBestMatch(answers);
+            for (let playerKey in players) {
+                const player = players[playerKey];
+                let similarityScore = 0;
+                
+                // Calcular score de similaridade baseado no perfil completo
+                for (let attr in player.profile) {
+                    const userValue = userProfile[attr] || 0;
+                    const playerValue = player.profile[attr];
+                    similarityScore += userValue * playerValue;
+                }
+                
+                if (similarityScore > bestScore) {
+                    bestScore = similarityScore;
+                    bestMatch = playerKey;
+                }
             }
             
-            const player = players[playerKey];
+            const player = players[bestMatch];
             
             document.getElementById('questionScreen').classList.add('hidden');
             document.getElementById('resultScreen').classList.remove('hidden');
             
-            document.getElementById('resultImage').innerHTML = `<img src="${IMAGES[player.imageKey]}" alt="${player.name}">`;
+            document.getElementById('resultImage').src = IMAGES[player.imageKey];
             document.getElementById('resultName').textContent = player.name;
             document.getElementById('resultDescription').textContent = player.description;
             
@@ -677,29 +738,12 @@
             });
         }
 
-        function findBestMatch(answers) {
-            // Fallback para encontrar melhor combinação
-            // Prioridade: era > estilo > personalidade
-            const partialKey1 = `${answers.era}-${answers.estilo}`;
-            const partialKey2 = answers.era;
-            
-            for (let key in playerMapping) {
-                if (key.startsWith(partialKey1)) return playerMapping[key];
-            }
-            
-            for (let key in playerMapping) {
-                if (key.startsWith(partialKey2)) return playerMapping[key];
-            }
-            
-            return "zico"; // Último fallback
-        }
-
         function shareWhatsApp() {
             const resultName = document.getElementById('resultName').textContent;
             const quizUrl = 'https://gabriel-saquelli.github.io/quiz-flamengo-brincadeira/';
             
             const text = `🔴⚫ *QUE JOGADOR DO FLAMENGO VOCÊ SERIA?* ⚽
-            
+
 Fiz o quiz e descobri que eu seria o *${resultName}*! 🏆
 
 Será que você é mais raçudo, técnico ou artilheiro? 🤔
@@ -716,7 +760,7 @@ ${quizUrl}
 
         function restartQuiz() {
             currentQuestion = 0;
-            answers = {};
+            userProfile = {};
             
             document.getElementById('resultScreen').classList.add('hidden');
             document.getElementById('startScreen').classList.remove('hidden');
