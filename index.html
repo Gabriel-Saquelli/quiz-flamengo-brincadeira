@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Que Jogador do Flamengo Você Seria?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #E31E24 0%, #8B0000 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #E31E24 0%, #000000 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '⚽';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: -30px;
+            right: -20px;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-screen h2 {
+            color: #E31E24;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .start-screen p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #E31E24 0%, #8B0000 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(227, 30, 36, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(227, 30, 36, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .question-screen {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #E31E24 0%, #8B0000 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .question-number {
+            color: #E31E24;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 3px solid transparent;
+            padding: 18px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            color: #333;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: rgba(227, 30, 36, 0.05);
+            transition: width 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #E31E24;
+            transform: translateX(5px);
+            background: white;
+        }
+
+        .option:hover::before {
+            width: 100%;
+        }
+
+        .option span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-screen {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .result-image {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+            animation: zoomIn 0.6s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .result-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.2));
+        }
+
+        .result-name {
+            font-size: 32px;
+            font-weight: 700;
+            color: #E31E24;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-description {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .result-traits {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .trait {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .trait:last-child {
+            border-bottom: none;
+        }
+
+        .trait-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .trait-text {
+            color: #333;
+            font-size: 15px;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn-share {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-share:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-restart {
+            background: #6c757d;
+        }
+
+        .btn-restart:hover {
+            background: #5a6268;
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .question-text {
+                font-size: 20px;
+            }
+
+            .result-image {
+                width: 250px;
+                height: 250px;
+            }
+
+            .result-name {
+                font-size: 26px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+        }
+
+        .upload-note {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .upload-note h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .upload-note p {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚽ Que Jogador do Flamengo Você Seria?</h1>
+            <p>Descubra qual lenda rubro-negra combina com você!</p>
+        </div>
+
+        <div class="content">
+            <div id="startScreen" class="start-screen">
+                <h2>🔴⚫ Bem-vindo ao Quiz!</h2>
+                <p>Responda 10 perguntas e descubra qual jogador icônico do Flamengo tem mais a ver com sua personalidade!</p>
+                <button class="btn" onclick="startQuiz()">Começar Quiz</button>
+            </div>
+
+            <div id="questionScreen" class="question-screen">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <div class="question-number" id="questionNumber"></div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+
+            <div id="resultScreen" class="result-screen">
+                <div class="result-image" id="resultImage"></div>
+                <div class="result-name" id="resultName"></div>
+                <div class="result-description" id="resultDescription"></div>
+                <div class="result-traits" id="resultTraits"></div>
+                <div class="share-buttons">
+                    <button class="btn-share" onclick="shareWhatsApp()">
+                        📱 Compartilhar no WhatsApp
+                    </button>
+                    <button class="btn-share btn-restart" onclick="restartQuiz()">
+                        🔄 Fazer Novamente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let userScores = {
+            lider: 0, tecnico: 0, artilheiro: 0, criativo: 0, racudo: 0,
+            confiante: 0, inteligente: 0, forcudo: 0, veloz: 0, versatil: 0,
+            classico: 0, moderno: 0, confiavel: 0
+        };
+
+        const players = {
+            zico: {
+                name: "Zico",
+                imageKey: "zico",
+                description: "O Galinho de Quintino! Você é técnico, criativo e um líder nato. Sua visão de jogo é incomparável e você sempre aparece nos momentos decisivos.",
+                traits: [
+                    { icon: "⚽", text: "Craque absoluto" },
+                    { icon: "🎯", text: "Cobrador de falta lendário" },
+                    { icon: "👑", text: "Líder inspirador" }
+                ],
+                scores: { tecnico: 3, criativo: 3, lider: 3, classico: 3 }
+            },
+            junior: {
+                name: "Júnior",
+                imageKey: "junior",
+                description: "O Capacete! Você é versátil, inteligente e sempre surpreende. Sua capacidade de se adaptar a diferentes posições é única.",
+                traits: [
+                    { icon: "🎨", text: "Versátil" },
+                    { icon: "🧠", text: "Inteligente taticamente" },
+                    { icon: "⭐", text: "Campeão do mundo" }
+                ],
+                scores: { versatil: 3, inteligente: 3, tecnico: 2, classico: 3 }
+            },
+            adilio: {
+                name: "Adílio",
+                imageKey: "adilio",
+                description: "O Divino! Você tem classe, elegância e uma técnica refinada. Seu estilo de jogo é pura poesia em campo.",
+                traits: [
+                    { icon: "✨", text: "Elegante" },
+                    { icon: "🎭", text: "Técnica refinada" },
+                    { icon: "💎", text: "Classe pura" }
+                ],
+                scores: { tecnico: 3, classico: 3, criativo: 2 }
+            },
+            romario: {
+                name: "Romário",
+                imageKey: "romario",
+                description: "O Baixinho! Você é artilheiro nato, confiante e decisivo. Sua frieza na área é lendária.",
+                traits: [
+                    { icon: "⚽", text: "Artilheiro implacável" },
+                    { icon: "😎", text: "Confiança absoluta" },
+                    { icon: "🎯", text: "Oportunista" }
+                ],
+                scores: { artilheiro: 3, confiante: 3, inteligente: 2 }
+            },
+            savio: {
+                name: "Sávio",
+                imageKey: "savio",
+                description: "Velocidade e habilidade! Você é explosivo, driblador e adora um drible desconcertante. Seu estilo é imprevisível.",
+                traits: [
+                    { icon: "⚡", text: "Velocidade" },
+                    { icon: "🎪", text: "Dribles desconcertantes" },
+                    { icon: "🔥", text: "Imprevisível" }
+                ],
+                scores: { veloz: 3, criativo: 2, tecnico: 2 }
+            },
+            adriano: {
+                name: "Adriano Imperador",
+                imageKey: "adriano",
+                description: "Força e potência! Você é imponente e intimidador. Quando decide, ninguém te para. Seu chute é lendário.",
+                traits: [
+                    { icon: "💥", text: "Potência física" },
+                    { icon: "🚀", text: "Chute devastador" },
+                    { icon: "👑", text: "Imponente" }
+                ],
+                scores: { forcudo: 3, artilheiro: 2, moderno: 2 }
+            },
+            petkovic: {
+                name: "Petkovic",
+                imageKey: "petkovic",
+                description: "Oportunista e eficiente! Você aproveita cada chance que aparece. Sua frieza nos momentos decisivos é crucial.",
+                traits: [
+                    { icon: "🎯", text: "Oportunista" },
+                    { icon: "❄️", text: "Frio nos momentos decisivos" },
+                    { icon: "⚽", text: "Goleador" }
+                ],
+                scores: { artilheiro: 3, inteligente: 2, moderno: 2 }
+            },
+            gabigol: {
+                name: "Gabigol",
+                imageKey: "gabigol",
+                description: "O herói moderno! Você aparece nos momentos mais importantes e adora uma final. Sua confiança é contagiante.",
+                traits: [
+                    { icon: "🏆", text: "Especialista em finais" },
+                    { icon: "⚽", text: "Faro de gol" },
+                    { icon: "😎", text: "Carismático" }
+                ],
+                scores: { artilheiro: 3, confiante: 3, moderno: 3 }
+            },
+            arrascaeta: {
+                name: "Arrascaeta",
+                imageKey: "arrascaeta",
+                description: "Mágico com a bola! Sua técnica refinada e visão de jogo fazem você criar jogadas incríveis. Você é pura arte.",
+                traits: [
+                    { icon: "🎨", text: "Técnica refinada" },
+                    { icon: "✨", text: "Craque criativo" },
+                    { icon: "👁️", text: "Visão de jogo" }
+                ],
+                scores: { tecnico: 3, criativo: 3, moderno: 3 }
+            },
+            brunohenrique: {
+                name: "Bruno Henrique",
+                imageKey: "brunohenrique",
+                description: "Raça pura! Você nunca desiste e dá o máximo em cada lance. Sua velocidade e determinação inspiram todos.",
+                traits: [
+                    { icon: "💪", text: "Raça infinita" },
+                    { icon: "⚡", text: "Velocidade" },
+                    { icon: "🔥", text: "Garra" }
+                ],
+                scores: { racudo: 3, veloz: 3, moderno: 3 }
+            },
+            evertonribeiro: {
+                name: "Everton Ribeiro",
+                imageKey: "evertonribeiro",
+                description: "Maestro do meio-campo! Você dita o ritmo do jogo e sempre toma as decisões certas. Sua elegância é marcante.",
+                traits: [
+                    { icon: "🎼", text: "Maestro" },
+                    { icon: "🧠", text: "Inteligência tática" },
+                    { icon: "👌", text: "Decisões certas" }
+                ],
+                scores: { inteligente: 3, tecnico: 2, moderno: 3 }
+            },
+            diegoalves: {
+                name: "Diego Alves",
+                imageKey: "diegoalves",
+                description: "O muralha! Você é confiável e sempre está lá quando o time precisa. Sua segurança tranquiliza todo mundo.",
+                traits: [
+                    { icon: "🧤", text: "Defesas impossíveis" },
+                    { icon: "🛡️", text: "Segurança" },
+                    { icon: "🎯", text: "Especialista em pênaltis" }
+                ],
+                scores: { confiavel: 3, lider: 2, moderno: 3 }
+            }
+        };
+
+        const questions = [
+            {
+                question: "Como você age em situações de pressão?",
+                options: [
+                    { text: "Assumo a responsabilidade e tomo decisões", scores: { lider: 2, confiante: 1 } },
+                    { text: "Penso estrategicamente na melhor solução", scores: { inteligente: 2, tecnico: 1 } },
+                    { text: "Vou com tudo e encaro de frente", scores: { racudo: 2, forcudo: 1 } },
+                    { text: "Uso criatividade para resolver", scores: { criativo: 2, tecnico: 1 } }
+                ]
+            },
+            {
+                question: "Qual é o seu estilo em campo?",
+                options: [
+                    { text: "Técnico e elegante", scores: { tecnico: 2, classico: 1 } },
+                    { text: "Veloz e explosivo", scores: { veloz: 2, moderno: 1 } },
+                    { text: "Forte e imponente", scores: { forcudo: 2, confiante: 1 } },
+                    { text: "Inteligente e tático", scores: { inteligente: 2, versatil: 1 } }
+                ]
+            },
+            {
+                question: "O que você valoriza mais?",
+                options: [
+                    { text: "Fazer gols decisivos", scores: { artilheiro: 2, confiante: 1 } },
+                    { text: "Criar jogadas bonitas", scores: { criativo: 2, tecnico: 1 } },
+                    { text: "Dar o máximo sempre", scores: { racudo: 2, confiavel: 1 } },
+                    { text: "Liderar o time", scores: { lider: 2, confiante: 1 } }
+                ]
+            },
+            {
+                question: "Como você prefere comemorar um gol?",
+                options: [
+                    { text: "Com confiança e atitude", scores: { confiante: 2, moderno: 1 } },
+                    { text: "Celebrando com o time", scores: { lider: 2, confiavel: 1 } },
+                    { text: "Com alegria e criatividade", scores: { criativo: 2, tecnico: 1 } },
+                    { text: "Com raça e emoção", scores: { racudo: 2, forcudo: 1 } }
+                ]
+            },
+            {
+                question: "Qual sua maior qualidade?",
+                options: [
+                    { text: "Técnica apurada", scores: { tecnico: 2, classico: 1 } },
+                    { text: "Velocidade", scores: { veloz: 2, moderno: 1 } },
+                    { text: "Força física", scores: { forcudo: 2, confiante: 1 } },
+                    { text: "Inteligência tática", scores: { inteligente: 2, versatil: 1 } }
+                ]
+            },
+            {
+                question: "Como você encara uma final?",
+                options: [
+                    { text: "Com confiança total", scores: { confiante: 2, artilheiro: 1 } },
+                    { text: "Preparado taticamente", scores: { inteligente: 2, lider: 1 } },
+                    { text: "Com raça e determinação", scores: { racudo: 2, confiavel: 1 } },
+                    { text: "Pronto para decidir", scores: { artilheiro: 2, confiante: 1 } }
+                ]
+            },
+            {
+                question: "Qual é o seu momento favorito no jogo?",
+                options: [
+                    { text: "Marcar o gol da vitória", scores: { artilheiro: 2, confiante: 1 } },
+                    { text: "Dar uma assistência perfeita", scores: { criativo: 2, inteligente: 1 } },
+                    { text: "Fazer uma defesa crucial", scores: { confiavel: 2, lider: 1 } },
+                    { text: "Dominar o meio-campo", scores: { versatil: 2, tecnico: 1 } }
+                ]
+            },
+            {
+                question: "Como você se descreve?",
+                options: [
+                    { text: "Clássico e elegante", scores: { classico: 2, tecnico: 1 } },
+                    { text: "Moderno e dinâmico", scores: { moderno: 2, veloz: 1 } },
+                    { text: "Forte e determinado", scores: { forcudo: 2, racudo: 1 } },
+                    { text: "Inteligente e versátil", scores: { inteligente: 2, versatil: 1 } }
+                ]
+            },
+            {
+                question: "O que te motiva em campo?",
+                options: [
+                    { text: "Fazer gols", scores: { artilheiro: 2, confiante: 1 } },
+                    { text: "Jogar bonito", scores: { tecnico: 2, criativo: 1 } },
+                    { text: "Vencer sempre", scores: { lider: 2, racudo: 1 } },
+                    { text: "Ser decisivo", scores: { confiante: 2, artilheiro: 1 } }
+                ]
+            },
+            {
+                question: "Qual é o seu lema?",
+                options: [
+                    { text: "Confiança é tudo", scores: { confiante: 2, moderno: 1 } },
+                    { text: "Raça e coração", scores: { racudo: 2, confiavel: 1 } },
+                    { text: "Técnica e inteligência", scores: { tecnico: 2, inteligente: 1 } },
+                    { text: "Liderar pelo exemplo", scores: { lider: 2, classico: 1 } }
+                ]
+            }
+        ];
+
+        function startQuiz() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('questionNumber').textContent = `Pergunta ${currentQuestion + 1} de ${questions.length}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.innerHTML = `<span>${option.text}</span>`;
+                optionDiv.onclick = () => selectOption(option.scores);
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function selectOption(scores) {
+            for (let key in scores) {
+                userScores[key] += scores[key];
+            }
+            
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            let bestMatch = null;
+            let highestScore = 0;
+            
+            for (let playerKey in players) {
+                const player = players[playerKey];
+                let matchScore = 0;
+                
+                for (let trait in player.scores) {
+                    matchScore += userScores[trait] * player.scores[trait];
+                }
+                
+                if (matchScore > highestScore) {
+                    highestScore = matchScore;
+                    bestMatch = player;
+                }
+            }
+            
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            
+            document.getElementById('resultImage').innerHTML = `<img src="${bestMatch.imageKey}.jpg" alt="${bestMatch.name}">`;
+            document.getElementById('resultName').textContent = bestMatch.name;
+            document.getElementById('resultDescription').textContent = bestMatch.description;
+            
+            const traitsContainer = document.getElementById('resultTraits');
+            traitsContainer.innerHTML = '';
+            bestMatch.traits.forEach(trait => {
+                const traitDiv = document.createElement('div');
+                traitDiv.className = 'trait';
+                traitDiv.innerHTML = `
+                    <div class="trait-icon">${trait.icon}</div>
+                    <div class="trait-text">${trait.text}</div>
+                `;
+                traitsContainer.appendChild(traitDiv);
+            });
+            
+            window.currentResult = bestMatch;
+        }
+
+        function shareWhatsApp() {
+            const result = window.currentResult;
+            const text = `🔴⚫ Fiz o quiz "Que Jogador do Flamengo Você Seria?" e meu resultado foi: ${result.name}! ${result.description}`;
+            const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            userScores = {
+                lider: 0, tecnico: 0, artilheiro: 0, criativo: 0, racudo: 0,
+                confiante: 0, inteligente: 0, forcudo: 0, veloz: 0, versatil: 0,
+                classico: 0, moderno: 0, confiavel: 0
+            };
+            
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
